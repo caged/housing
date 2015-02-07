@@ -25,6 +25,7 @@ shp/multi_family_properties.shp: gz/zillow/c55eb46fbc3b472cabd0c2a41f805261_0.zi
 
 # Location Affordability Index Data
 # http://zillowhack.hud.opendata.arcgis.com/datasets/27b53ea69f98474eb002ac3b9c6b51eb_0
+# http://lai.locationaffordability.info//lai_data_dictionary.pdf
 shp/location_affordability_index.shp: gz/zillow/27b53ea69f98474eb002ac3b9c6b51eb_0.zip
 
 # Low-Income Housing Tax Credit (LIHTC)
