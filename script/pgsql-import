@@ -1,0 +1,43 @@
+#!/bin/bash
+
+usage() { echo "Usage: $0 [-d database name] [-i geojson file]" 1>&2; exit 1; }
+
+while getopts ":d:i:" opt; do
+  case $opt in
+    d)
+      dbname=$OPTARG
+      ;;
+    i)
+      input=$OPTARG
+      ;;
+    *)
+      usage
+      ;;
+  esac
+done
+
+if [[ -z $dbname  || -z $input ]]; then
+  usage
+fi
+
+file_name=$(basename $input)
+table_name="${file_name%.*}"
+
+psql -c "drop table if exists $table_name" $dbname
+
+ogr2ogr -nln $table_name \
+  -dim 2 \
+  --config PG_USE_COPY YES \
+  -f PGDump /dev/stdout $input \
+  | psql -d $dbname -f -
+
+# This whole mess is because importing these GeoJSON files causes the geometry
+# column to appear at the front in postgres' output.  This makes is super hard to
+# quickly inspect the other column data.
+#
+# Add a new `geom` column at the end of the table and set to wkb_geometry
+geom_type=`ogrinfo -ro -q $input | grep -Eo 'Point|Polygon'`
+psql -c "alter table $table_name add column geom geometry(${geom_type:-Geometry}, 4326)" $dbname
+psql -c "update $table_name set geom = wkb_geometry" $dbname
+psql -c "alter table $table_name drop column wkb_geometry" $dbname
+psql -c "create index ${table_name}_geom_idx on $table_name using gist(geom)" $dbname
