@@ -4,6 +4,11 @@ all:
 
 .SECONDARY:
 
+gz/%.zip:
+	mkdir -p $(dir $@)
+	curl --remote-time 'http://www2.census.gov/geo/tiger/TIGER2010DP1/$(notdir $@)' -o $@.download
+	mv $@.download $@
+
 # Public Housing Authorities
 # http://zillowhack.hud.opendata.arcgis.com/datasets/0e99651ec61242648f3128e8fd36be4d_0
 json/zillow/public_housing_authorities.json:
@@ -31,7 +36,7 @@ json/zillow/multi_family_properties.geojson:
 # Location Affordability Index Data
 # http://zillowhack.hud.opendata.arcgis.com/datasets/27b53ea69f98474eb002ac3b9c6b51eb_0
 # http://lai.locationaffordability.info//lai_data_dictionary.pdf
-json/zillow/location_affordability_index.gejson:
+json/zillow/location_affordability_index.geojson:
 	curl --create-dirs --remote-time "http://zillowhack.hud.opendata.arcgis.com/datasets/27b53ea69f98474eb002ac3b9c6b51eb_0.geojson" -o $@.download
 	mv $@.download $@
 
@@ -52,3 +57,16 @@ json/zillow/housing_choice_voucher_program.geojson:
 json/zillow/fair_market_rents.geojson:
 	curl --create-dirs --remote-time "http://zillowhack.hud.opendata.arcgis.com/datasets/e29dca94b6924766a124d7c767e03b75_0.geojson" -o $@.download
 	mv $@.download $@
+
+shp/us/places.shp: gz/Place_2010Census_DP1.zip
+shp/us/states.shp: gz/State_2010Census_DP1.zip
+
+# US Places with selected demographics - 2010 US Census
+#
+# http://www2.census.gov/geo/tiger/TIGER2010DP1/Place_2010Census_DP1.zip
+shp/us/%.shp:
+	rm -rf $(basename $@)
+	mkdir -p $(basename $@)
+	tar -xzm -C $(basename $@) -f $<
+	for file in $(basename $@)/*; do chmod 644 $$file; mv $$file $(basename $@).$${file##*.}; done
+	rmdir $(basename $@)
