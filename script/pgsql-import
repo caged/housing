@@ -24,6 +24,7 @@ file_name=$(basename $input)
 table_name="${file_name%.*}"
 
 psql -c "drop table if exists $table_name" $dbname
+psql -f  sql/_random_points_in_polygon.sql $dbname
 
 ogr2ogr -nln $table_name \
   -dim 2 \
@@ -37,7 +38,9 @@ ogr2ogr -nln $table_name \
 #
 # Add a new `geom` column at the end of the table and set to wkb_geometry
 geom_type=`ogrinfo -ro -q $input | grep -Eo 'Point|Polygon'`
-psql -c "alter table $table_name add column geom geometry(${geom_type:-Geometry}, 4326)" $dbname
+echo $geom_type
+
+psql -c "alter table $table_name add column geom geometry(${geom_type:-MultiPolygon}, 4326)" $dbname
 psql -c "update $table_name set geom = wkb_geometry" $dbname
 psql -c "alter table $table_name drop column wkb_geometry" $dbname
 psql -c "create index ${table_name}_geom_idx on $table_name using gist(geom)" $dbname
