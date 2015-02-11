@@ -1,8 +1,8 @@
 #!/bin/bash
 
-usage() { echo "Usage: $0 [-d database name] [-i geojson file]" 1>&2; exit 1; }
+usage() { echo "Usage: $0 [-d database name] [-i geojson file] [-t table name]" 1>&2; exit 1; }
 
-while getopts ":d:i:" opt; do
+while getopts ":d:i:t:" opt; do
   case $opt in
     d)
       dbname=$OPTARG
@@ -10,18 +10,20 @@ while getopts ":d:i:" opt; do
     i)
       input=$OPTARG
       ;;
+    t)
+      table_name=$OPTARG
+      ;;
     *)
       usage
       ;;
   esac
 done
 
-if [[ -z $dbname  || -z $input ]]; then
+if [[ -z $dbname  || -z $input || -z $table_name ]]; then
   usage
 fi
 
 file_name=$(basename $input)
-table_name="${file_name%.*}"
 
 psql -c "drop table if exists $table_name" $dbname
 psql -f  sql/_random_points_in_polygon.sql $dbname
