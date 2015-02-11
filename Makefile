@@ -34,14 +34,6 @@ topo/multi_family_properties.json:	geojson/zillow/c55eb46fbc3b472cabd0c2a41f8052
 # http://zillowhack.hud.opendata.arcgis.com/datasets/27b53ea69f98474eb002ac3b9c6b51eb_0
 # http://lai.locationaffordability.info//lai_data_dictionary.pdf
 topo/location_affordability_index.json:	geojson/zillow/27b53ea69f98474eb002ac3b9c6b51eb_0.geojson
-	mkdir -p $(dir $@)
-	node --max_old_space_size=82192 `which topojson` \
-		-o $@ \
-		--no-pre-quantization \
-		--post-quantization=1e6 \
-		--simplify=7e-7 \
-		--id-property=+FIPS \
-		-- $<
 
 # Low-Income Housing Tax Credit (LIHTC)
 # http://zillowhack.hud.opendata.arcgis.com/datasets/c0d79831f95c46018349657dc768ddc4_0
