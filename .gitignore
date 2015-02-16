@@ -5,3 +5,5 @@ gz
 node_modules
 geojson
 topo
+gdb
+csv
