@@ -4,7 +4,7 @@ all:
 
 gz/tiger/%.zip:
 	mkdir -p $(dir $@)
-	curl --remote-time 'http://www2.census.gov/geo/tiger/TIGER2010DP1/$(notdir $@)' -o $@.download
+	curl -L --remote-time 'http://www2.census.gov/geo/tiger/TIGER_DP/$(notdir $@)' -o $@.download
 	mv $@.download $@
 
 gz/metro/%.zip:
@@ -24,6 +24,10 @@ gdb/tiger/acs_2013_5yr.zip: gz/tiger/2013ACS/ACS_2013_5YR_BG_41.gdb.zip
 	curl -L --remote-time 'http://www2.census.gov/geo/tiger/TIGER_DP/2013ACS/ACS_2013_5YR_BG_41.gdb.zip' -o $@.download
 	mv $@.download $@
 
+csv/oregon_lai.csv:
+	mkdir -p $(dir $@)
+	curl -L --remote-time 'http://lai.locationaffordability.info//download_csv.php?state=41&geography=blkgrp' -o $@.download
+	mv $@.download $@
 
 # US Places with selected demographics - 2010 US Census
 # http://www2.census.gov/geo/tiger/TIGER2010DP1/Place_2010Census_DP1.zip
