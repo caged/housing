@@ -1,5 +1,3 @@
-DB_NAME=housing
-
 all:
 
 .SECONDARY:
