@@ -1,6 +1,5 @@
 drop table if exists portland_index;
-with
-portland as (
+with portland as (
   select places.*
   from states
   inner join places on st_contains(states.geom, places.geom)
