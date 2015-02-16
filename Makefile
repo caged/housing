@@ -18,8 +18,9 @@ gz/pdx/%.zip:
 	mv $@.download $@
 
 geojson/zillow/%.geojson:
+gdb/tiger/acs_2013_5yr.zip: gz/tiger/2013ACS/ACS_2013_5YR_BG_41.gdb.zip
 	mkdir -p $(dir $@)
-	curl --remote-time 'http://zillowhack.hud.opendata.arcgis.com/datasets/$(notdir $@)' -o $@.download
+	curl -L --remote-time 'http://www2.census.gov/geo/tiger/TIGER_DP/2013ACS/ACS_2013_5YR_BG_41.gdb.zip' -o $@.download
 	mv $@.download $@
 
 
