@@ -17,7 +17,8 @@ gz/pdx/%.zip:
 	curl --remote-time 'ftp://ftp02.portlandoregon.gov/CivicApps/$(notdir $@)' -o $@.download
 	mv $@.download $@
 
-geojson/zillow/%.geojson:
+# Portland
+shp/pdx/tsp_district_boundaries.shp: gz/pdx/TSP_District_Boundaries_pdx.zip
 gdb/tiger/acs_2013_5yr.zip: gz/tiger/2013ACS/ACS_2013_5YR_BG_41.gdb.zip
 	mkdir -p $(dir $@)
 	curl -L --remote-time 'http://www2.census.gov/geo/tiger/TIGER_DP/2013ACS/ACS_2013_5YR_BG_41.gdb.zip' -o $@.download
