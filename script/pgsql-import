@@ -26,7 +26,6 @@ fi
 file_name=$(basename $input)
 
 psql -c "drop table if exists $table_name" $dbname
-psql -f  sql/_random_points_in_polygon.sql $dbname
 
 ogr2ogr -nln $table_name \
   -dim 2 \
