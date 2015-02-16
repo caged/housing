@@ -4,9 +4,19 @@ all:
 
 .SECONDARY:
 
-gz/%.zip:
+gz/tiger/%.zip:
 	mkdir -p $(dir $@)
 	curl --remote-time 'http://www2.census.gov/geo/tiger/TIGER2010DP1/$(notdir $@)' -o $@.download
+	mv $@.download $@
+
+gz/metro/%.zip:
+	mkdir -p $(dir $@)
+	curl -L --remote-time 'http://library.oregonmetro.gov/rlisdiscovery/$(notdir $@)' -o $@.download
+	mv $@.download $@
+
+gz/pdx/%.zip:
+	mkdir -p $(dir $@)
+	curl --remote-time 'ftp://ftp02.portlandoregon.gov/CivicApps/$(notdir $@)' -o $@.download
 	mv $@.download $@
 
 geojson/zillow/%.geojson:
@@ -47,8 +57,13 @@ topo/housing_choice_voucher_program.json:	geojson/zillow/42c4d3d6648c4d5196fa000
 # http://zillowhack.hud.opendata.arcgis.com/datasets/e29dca94b6924766a124d7c767e03b75_0
 topo/fair_market_rents.json:	geojson/zillow/e29dca94b6924766a124d7c767e03b75_0.geojson
 
-shp/us/places.shp: gz/Place_2010Census_DP1.zip
-shp/us/states.shp: gz/State_2010Census_DP1.zip
+# US Census
+shp/us/places.shp: gz/tiger/Place_2010Census_DP1.zip
+shp/us/states.shp: gz/tiger/State_2010Census_DP1.zip
+
+# Portland
+shp/pdx/neighborhoods.shp: gz/pdx/Neighborhoods_pdx.zip
+shp/pdx/tsp_district_boundaries.shp: gz/pdx/TSP_District_Boundaries_pdx.zip
 
 # US Places with selected demographics - 2010 US Census
 # http://www2.census.gov/geo/tiger/TIGER2010DP1/Place_2010Census_DP1.zip
@@ -58,3 +73,14 @@ shp/us/%.shp:
 	tar -xzm -C $(basename $@) -f $<
 	for file in $(basename $@)/*; do chmod 644 $$file; mv $$file $(basename $@).$${file##*.}; done
 	rmdir $(basename $@)
+
+shp/pdx/%.shp:
+	rm -rf $(basename $@)
+	mkdir -p $(basename $@)
+	tar --exclude="._*" -xzm -C $(basename $@) -f $<
+
+	for file in `find $(basename $@) -name '*.shp'`; do \
+		ogr2ogr -dim 2 -f 'ESRI Shapefile' -t_srs 'EPSG:4326' $(basename $@).$${file##*.} $$file; \
+		chmod 644 $(basename $@).$${file##*.}; \
+	done
+	rm -rf $(basename $@)
