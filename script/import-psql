@@ -1,0 +1,21 @@
+#!/bin/bash
+
+usage() {
+  echo "Usage: $0 [-d database name]" 1>&2; exit 1;
+}
+
+while getopts ":d:" opt; do
+  case ${opt} in
+    d) db_name=$OPTARG;;
+    *) usage;;
+  esac
+done
+
+if [[ -z $db_name  ]]; then usage; fi
+
+dropdb --if-exists -i $db_name
+createdb $db_name
+psql -c 'create extension postgis' $db_name
+
+make shp/pdx/tsp_district_boundaries.shp
+make csv/oregon_lai.csv:
