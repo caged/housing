@@ -40,12 +40,23 @@ ogr2ogr -f "GeoJSON" $tmp_dir/streets.geojson \
     inner join streets on st_intersects(tsp.geom, streets.geom) \
     where districtna = '${area}'"
 
+ogr2ogr -f "GeoJSON" $tmp_dir/parks.geojson \
+  -t_srs $OREGON_NORTH_SRS \
+  -simplify 0.0001 \
+  PG:"dbname=${db_name}" \
+  -sql "select st_union(st_intersection(tsp.geom, parks.geom)) as geom \
+    from tsp_districts tsp  \
+    inner join parks on st_intersects(tsp.geom, parks.geom) \
+    where districtna = '${area}'"
+
 topojson \
   -o $out_file \
   -s .25 \
-  --width 500 \
-  --height 500 \
+  --width 800 \
+  --height 800 \
   --margin 10 \
-  -- $tmp_dir/blockgroups.geojson $tmp_dir/streets.geojson
+  -- $tmp_dir/blockgroups.geojson \
+     $tmp_dir/streets.geojson \
+     $tmp_dir/parks.geojson
 
 rm -rf $tmp_dir
