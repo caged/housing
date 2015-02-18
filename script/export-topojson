@@ -1,0 +1,48 @@
+#!/bin/bash
+
+set -e
+
+usage() {
+  echo "Usage: $0 [-d database name] [-o out file or /dev/stdout] [-a TSP area N, NE, NW, CENTRAL, FAR_SE, etc.]" 1>&2; exit 1;
+}
+
+while getopts ":d:o:a:" opt; do
+  case ${opt} in
+    d) db_name=$OPTARG;;
+    o) out_file=$OPTARG;;
+    a) area=$OPTARG;;
+    *) usage;;
+  esac
+done
+
+if [[ -z $db_name || -z $out_file || -z $area ]]; then usage; fi
+
+tmp_dir=`mktemp -t housing -d`
+
+ogr2ogr -f "GeoJSON" $tmp_dir/blockgroups.geojson \
+  -t_srs 'EPSG:2913' \
+  PG:"dbname=${db_name}" \
+  -sql "select st_intersection(tsp.geom, acs.wkb_geometry) as geom, acs.*, lai.* \
+    from tsp_districts tsp \
+    inner join acs_2013_5yr_bg_41_oregon acs on st_intersects(tsp.geom, acs.wkb_geometry) \
+    inner join lai on lai.blkgrp = acs.geoid
+    where districtna = '${area}'"
+
+ogr2ogr -f "GeoJSON" $tmp_dir/streets.geojson \
+  -t_srs 'EPSG:2913' \
+  PG:"dbname=${db_name}" \
+  -sql "select st_intersection(tsp.geom, streets.geom) as geom \
+    from tsp_districts tsp  \
+    inner join streets on st_intersects(tsp.geom, streets.geom) \
+    where districtna = '${area}'"
+
+topojson \
+  -o $out_file \
+  -s .25 \
+  --width 500 \
+  --height 500 \
+  --margin 10 \
+  --properties \
+  -- $tmp_dir/blockgroups.geojson $tmp_dir/streets.geojson
+
+rm -rf $tmp_dir
