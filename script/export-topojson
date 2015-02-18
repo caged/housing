@@ -35,7 +35,7 @@ ogr2ogr -f "GeoJSON" $tmp_dir/streets.geojson \
   -t_srs $OREGON_NORTH_SRS \
   -simplify 0.0001 \
   PG:"dbname=${db_name}" \
-  -sql "select st_intersection(tsp.geom, streets.geom) as geom \
+  -sql "select st_union(st_intersection(tsp.geom, streets.geom)) as geom \
     from tsp_districts tsp  \
     inner join streets on st_intersects(tsp.geom, streets.geom) \
     where districtna = '${area}'"
