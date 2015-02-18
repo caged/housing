@@ -2,6 +2,8 @@
 
 set -e
 
+OREGON_NORTH_SRS='EPSG:2913'
+
 usage() {
   echo "Usage: $0 [-d database name] [-o out file or /dev/stdout] [-a TSP area N, NE, NW, CENTRAL, FAR_SE, etc.]" 1>&2; exit 1;
 }
@@ -20,7 +22,7 @@ if [[ -z $db_name || -z $out_file || -z $area ]]; then usage; fi
 tmp_dir=`mktemp -t housing -d`
 
 ogr2ogr -f "GeoJSON" $tmp_dir/blockgroups.geojson \
-  -t_srs 'EPSG:2913' \
+  -t_srs $OREGON_NORTH_SRS \
   PG:"dbname=${db_name}" \
   -sql "select st_intersection(tsp.geom, acs.wkb_geometry) as geom, acs.*, lai.* \
     from tsp_districts tsp \
@@ -29,7 +31,7 @@ ogr2ogr -f "GeoJSON" $tmp_dir/blockgroups.geojson \
     where districtna = '${area}'"
 
 ogr2ogr -f "GeoJSON" $tmp_dir/streets.geojson \
-  -t_srs 'EPSG:2913' \
+  -t_srs $OREGON_NORTH_SRS \
   PG:"dbname=${db_name}" \
   -sql "select st_intersection(tsp.geom, streets.geom) as geom \
     from tsp_districts tsp  \
