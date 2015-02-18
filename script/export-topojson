@@ -46,7 +46,6 @@ topojson \
   --width 500 \
   --height 500 \
   --margin 10 \
-  --properties \
   -- $tmp_dir/blockgroups.geojson $tmp_dir/streets.geojson
 
 rm -rf $tmp_dir
