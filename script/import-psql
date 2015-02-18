@@ -1,0 +1,37 @@
+#!/bin/bash
+
+set -e
+
+usage() {
+  echo "Usage: $0 [-d database name]" 1>&2; exit 1;
+}
+
+while getopts ":d:" opt; do
+  case ${opt} in
+    d) db_name=$OPTARG;;
+    *) usage;;
+  esac
+done
+
+if [[ -z $db_name  ]]; then usage; fi
+
+dropdb --if-exists -i $db_name
+createdb $db_name
+psql -c 'create extension postgis' $db_name
+
+# Download and extract data
+make shp/pdx/tsp_district_boundaries.shp
+make gdb/tiger/acs_2013_5yr.gdb
+make csv/oregon_lai.csv
+
+# Import portland data
+shp2pgsql -W "latin1" -t 2D -I -D -s 4326 shp/pdx/tsp_district_boundaries.shp tsp_districts | psql $db_name
+shp2pgsql -W "latin1" -t 2D -I -D -s 4326 shp/pdx/streets.shp | psql $db_name
+
+# Import location affordability index data
+psql -f sql/lai_schema.sql $db_name
+cat csv/oregon_lai.csv | psql -c "copy lai from stdin with csv header delimiter ',' NULL E'' quote '\"'" $db_name
+psql -c "update lai set blkgrp = replace(blkgrp, '''', '')" $db_name # bad data, ids contain surrounding quotes
+
+# Import ACS geography and data.  This will create multiple tables to support ACS data.
+ogr2ogr -t_srs 'EPSG:4326' --config PG_USE_COPY YES -append -f PGDump /dev/stdout gdb/tiger/ACS_2013_5YR_BG_41_OREGON.gdb/ | psql $db_name
