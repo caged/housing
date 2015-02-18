@@ -19,6 +19,8 @@ gz/pdx/%.zip:
 
 # Portland
 shp/pdx/tsp_district_boundaries.shp: gz/pdx/TSP_District_Boundaries_pdx.zip
+shp/pdx/streets.shp: gz/pdx/Streets_pdx.zip
+
 gz/tiger/acs_2013_5yr.zip:
 	mkdir -p $(dir $@)
 	curl -L --remote-time 'http://www2.census.gov/geo/tiger/TIGER_DP/2013ACS/ACS_2013_5YR_BG_41.gdb.zip' -o $@.download
