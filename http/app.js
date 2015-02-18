@@ -9,11 +9,16 @@ var svg = map.append('svg')
   .attr('width', width)
   .attr('height', height)
 
-d3.json("data/c.json", function(err, pdx) {
+d3.json("data/sw.json", function(err, pdx) {
 
   svg.append('path')
     .datum(topojson.feature(pdx, pdx.objects.parks))
     .attr('class', 'parks')
+    .attr('d', path)
+
+  svg.append('path')
+    .datum(topojson.feature(pdx, pdx.objects.rivers))
+    .attr('class', 'rivers')
     .attr('d', path)
 
   svg.append('path')
@@ -26,8 +31,9 @@ d3.json("data/c.json", function(err, pdx) {
     .attr('class', 'buildings')
     .attr('d', path)
 
-  svg.append('path')
-    .datum(topojson.feature(pdx, pdx.objects.blockgroups))
+  svg.selectAll('.blockgroup')
+    .data(topojson.feature(pdx, pdx.objects.blockgroups).features)
+  .enter().append('path')
     .attr('class', 'blockgroups')
     .attr('d', path)
 })

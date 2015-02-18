@@ -21,6 +21,15 @@ if [[ -z $db_name || -z $out_file || -z $area ]]; then usage; fi
 
 tmp_dir=`mktemp -t housing -d`
 
+ogr2ogr -f "GeoJSON" $tmp_dir/rivers.geojson \
+  -t_srs $OREGON_NORTH_SRS \
+  -simplify 0.0001 \
+  PG:"dbname=${db_name}" \
+  -sql "select st_union(st_intersection(tsp.geom, rivers.geom)) as geom \
+    from tsp_districts tsp  \
+    inner join rivers on st_intersects(tsp.geom, rivers.geom) \
+    where districtna = '${area}'"
+
 ogr2ogr -f "GeoJSON" $tmp_dir/blockgroups.geojson \
   -t_srs $OREGON_NORTH_SRS \
   -simplify 0.0001 \
@@ -63,7 +72,8 @@ topojson \
   -s .25 \
   --width 1000 \
   --height 1000 \
-  -- $tmp_dir/blockgroups.geojson \
+  -- $tmp_dir/rivers.geojson \
+     $tmp_dir/blockgroups.geojson \
      $tmp_dir/streets.geojson \
      $tmp_dir/parks.geojson \
      $tmp_dir/buildings.geojson
