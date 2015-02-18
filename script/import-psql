@@ -23,6 +23,7 @@ psql -c 'create extension postgis' $db_name
 make shp/pdx/tsp_district_boundaries.shp
 make shp/pdx/streets.shp
 make shp/pdx/parks.shp
+make shp/pdx/buildings.shp
 
 make gdb/tiger/acs_2013_5yr.gdb
 make csv/oregon_lai.csv
@@ -31,6 +32,7 @@ make csv/oregon_lai.csv
 shp2pgsql -W "latin1" -t 2D -I -D -s 4326 shp/pdx/tsp_district_boundaries.shp tsp_districts | psql $db_name
 shp2pgsql -W "latin1" -t 2D -I -D -s 4326 shp/pdx/streets.shp | psql $db_name
 shp2pgsql -W "latin1" -t 2D -I -D -s 4326 shp/pdx/parks.shp | psql $db_name
+shp2pgsql -W "latin1" -t 2D -I -D -s 4326 shp/pdx/buildings.shp | psql $db_name
 
 # Import location affordability index data
 psql -f sql/lai_schema.sql $db_name

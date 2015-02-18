@@ -21,6 +21,7 @@ gz/pdx/%.zip:
 shp/pdx/tsp_district_boundaries.shp: gz/pdx/TSP_District_Boundaries_pdx.zip
 shp/pdx/streets.shp: gz/pdx/Streets_pdx.zip
 shp/pdx/parks.shp: gz/pdx/Parks_pdx.zip
+shp/pdx/buildings.shp: gz/pdx/Building_Footprints_pdx.zip
 
 gz/tiger/acs_2013_5yr.zip:
 	mkdir -p $(dir $@)
