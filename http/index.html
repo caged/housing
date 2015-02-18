@@ -6,13 +6,30 @@
   body {
     background: #f7f7f7;
   }
+
+  .blockgroups {
+    fill: none;
+    stroke: #ddd;
+  }
+
+  .parks {
+    fill: #eaf1da;
+    stroke: none;
+  }
+
+  .streets {
+    fill: none;
+    stroke: #f1f1f1;
+    stroke-width: 0.5;
+  }
 </style>
 </head>
 <body>
+<div class="map js-map"></div>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
 <script src="https://rawgit.com/d3/d3-plugins/master/cubehelix/cubehelix.js"></script>
 <script src="https://rawgit.com/tmcw/simple-statistics/master/src/simple_statistics.js"></script>
-<script type="text/javascript"></script>
+<script src="app.js"></script>
 </body>
 </html>
