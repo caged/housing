@@ -38,7 +38,7 @@ ogr2ogr -f "GeoJSON" $tmp_dir/blockgroups.geojson \
     from tsp_districts tsp \
     inner join acs_2013_5yr_bg_41_oregon acs on st_intersects(tsp.geom, acs.wkb_geometry) \
     inner join lai on lai.blkgrp = acs.geoid
-    where districtna = '${area}'"
+    where districtna = '${area}' and st_isvalid(acs.wkb_geometry)"
 
 ogr2ogr -f "GeoJSON" $tmp_dir/streets.geojson \
   -t_srs $OREGON_NORTH_SRS \
@@ -47,7 +47,7 @@ ogr2ogr -f "GeoJSON" $tmp_dir/streets.geojson \
   -sql "select st_union(st_intersection(tsp.geom, streets.geom)) as geom \
     from tsp_districts tsp  \
     inner join streets on st_intersects(tsp.geom, streets.geom) \
-    where districtna = '${area}'"
+    where districtna = '${area}' and st_isvalid(streets.geom)"
 
 ogr2ogr -f "GeoJSON" $tmp_dir/parks.geojson \
   -t_srs $OREGON_NORTH_SRS \
@@ -56,7 +56,7 @@ ogr2ogr -f "GeoJSON" $tmp_dir/parks.geojson \
   -sql "select st_union(st_intersection(tsp.geom, parks.geom)) as geom \
     from tsp_districts tsp  \
     inner join parks on st_intersects(tsp.geom, parks.geom) \
-    where districtna = '${area}'"
+    where districtna = '${area}' and st_isvalid(parks.geom)"
 
 ogr2ogr -f "GeoJSON" $tmp_dir/buildings.geojson \
   -t_srs $OREGON_NORTH_SRS \
