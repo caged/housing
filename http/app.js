@@ -9,7 +9,7 @@ var svg = map.append('svg')
   .attr('width', width)
   .attr('height', height)
 
-d3.json("data/se.json", function(err, pdx) {
+d3.json("data/ne.json", function(err, pdx) {
 // Hardcoded bg median income extents from the entire Portland area
 var extent = [1368.33492, 207549.87568],
     extentr = [1302.11322, 145312.92241]
@@ -52,4 +52,9 @@ svg.append('path')
     .datum(topojson.feature(pdx, pdx.objects.buildings))
     .attr('class', 'buildings')
     .attr('d', path)
+
+  svg.append('text')
+    .attr('class', 'label')
+    .attr('transform', 'translate(500, 585) rotate(-28.5)')
+    .text('Sandy Boulevard')
 })
