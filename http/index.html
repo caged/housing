@@ -2,17 +2,70 @@
 <html>
 <head>
 <meta charset="utf-8">
+<link href='http://fonts.googleapis.com/css?family=Lustria' rel='stylesheet' type='text/css'>
 <style>
   body {
-    background: #f7f7f7;
+    background: #fff;
+  }
+
+  .land {
+    fill: #eaf1da;
+    stroke: none;
+  }
+
+  .blockgroups {
+    fill: none;
+    stroke: #fff;
+    stroke-opacity: 0.3;
+    stroke-width: 0.5;
+  }
+
+  .parks {
+    fill: #d7e4b9;
+    stroke: none;
+  }
+
+  .rivers {
+    fill: #469FCA;
+    fill-opacity: 1;
+  }
+
+  .streets {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 0.5;
+    stroke-opacity: 0.8;
+  }
+
+  .buildings {
+    fill: #fff;
+    fill-opacity: 0.5;
+    stroke: none;
+  }
+
+  .label {
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    fill: #fff;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 40px;
+    font-family: Lustria;
+    font-weight: normal;
   }
 </style>
 </head>
 <body>
+<h1>Northeast Portland</h1>
+<div class="map js-map"></div>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
 <script src="https://rawgit.com/d3/d3-plugins/master/cubehelix/cubehelix.js"></script>
 <script src="https://rawgit.com/tmcw/simple-statistics/master/src/simple_statistics.js"></script>
-<script type="text/javascript"></script>
+<script src="app.js"></script>
 </body>
 </html>
