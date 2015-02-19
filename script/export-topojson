@@ -70,8 +70,10 @@ ogr2ogr -f "GeoJSON" $tmp_dir/buildings.geojson \
 topojson \
   -o $out_file \
   -s .25 \
-  --width 1000 \
-  --height 1000 \
+  -p bmio=+blkgrp_median_income_owners \
+  -p bmir=+blkgrp_median_income_renters \
+  --width 800 \
+  --height 800 \
   -- $tmp_dir/rivers.geojson \
      $tmp_dir/blockgroups.geojson \
      $tmp_dir/streets.geojson \
