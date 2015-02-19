@@ -10,6 +10,10 @@ var svg = map.append('svg')
   .attr('height', height)
 
 d3.json("data/sw.json", function(err, pdx) {
+svg.append('path')
+  .datum(topojson.merge(pdx, pdx.objects.blockgroups.geometries))
+  .attr('class', 'land')
+  .attr('d', path)
 
   svg.append('path')
     .datum(topojson.feature(pdx, pdx.objects.parks))
