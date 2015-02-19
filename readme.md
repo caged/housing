@@ -1,3 +1,5 @@
+![](/preview.png)
+
 ### Portland Area Blockgroup Statistics
 
 I'm not sure what's going to surface from this, but currently it's a way to load and inspect thousands of datapoints per blockgroup for Portland.
