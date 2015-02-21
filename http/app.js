@@ -19,11 +19,6 @@ var color = d3.scale.linear()
   .range(["hsl(62,100%,90%)", "hsl(228,30%,20%)"])
   .interpolate(d3.interpolateCubehelix)
 
-svg.append('path')
-  .datum(topojson.merge(pdx, pdx.objects.blockgroups.geometries))
-  .attr('class', 'land')
-  .attr('d', path)
-
   svg.selectAll('.blockgroups')
     .data(topojson.feature(pdx, pdx.objects.blockgroups).features)
   .enter().append('path')
