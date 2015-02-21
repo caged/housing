@@ -19,6 +19,8 @@ done
 
 if [[ -z $db_name || -z $out_file || -z $area ]]; then usage; fi
 
+area=`echo ${area} | tr '[:upper:]' '[:lower:]'`
+
 tmp_dir=`mktemp -t housing -d`
 
 ogr2ogr -f "GeoJSON" $tmp_dir/rivers.geojson \
@@ -28,7 +30,7 @@ ogr2ogr -f "GeoJSON" $tmp_dir/rivers.geojson \
   -sql "select st_union(st_intersection(tsp.geom, rivers.geom)) as geom \
     from tsp_districts tsp  \
     inner join rivers on st_intersects(tsp.geom, rivers.geom) \
-    where districtna = '${area}'"
+    where lower(districtna) = '${area}' and st_isvalid(rivers.geom)"
 
 ogr2ogr -f "GeoJSON" $tmp_dir/blockgroups.geojson \
   -t_srs $OREGON_NORTH_SRS \
@@ -38,7 +40,7 @@ ogr2ogr -f "GeoJSON" $tmp_dir/blockgroups.geojson \
     from tsp_districts tsp \
     inner join acs_2013_5yr_bg_41_oregon acs on st_intersects(tsp.geom, acs.wkb_geometry) \
     inner join lai on lai.blkgrp = acs.geoid
-    where districtna = '${area}' and st_isvalid(acs.wkb_geometry)"
+    where lower(districtna) = '${area}' and st_isvalid(acs.wkb_geometry)"
 
 ogr2ogr -f "GeoJSON" $tmp_dir/streets.geojson \
   -t_srs $OREGON_NORTH_SRS \
@@ -47,7 +49,7 @@ ogr2ogr -f "GeoJSON" $tmp_dir/streets.geojson \
   -sql "select st_union(st_intersection(tsp.geom, streets.geom)) as geom \
     from tsp_districts tsp  \
     inner join streets on st_intersects(tsp.geom, streets.geom) \
-    where districtna = '${area}' and st_isvalid(streets.geom)"
+    where lower(districtna) = '${area}' and st_isvalid(streets.geom)"
 
 ogr2ogr -f "GeoJSON" $tmp_dir/parks.geojson \
   -t_srs $OREGON_NORTH_SRS \
@@ -56,7 +58,7 @@ ogr2ogr -f "GeoJSON" $tmp_dir/parks.geojson \
   -sql "select st_union(st_intersection(tsp.geom, parks.geom)) as geom \
     from tsp_districts tsp  \
     inner join parks on st_intersects(tsp.geom, parks.geom) \
-    where districtna = '${area}' and st_isvalid(parks.geom)"
+    where lower(districtna) = '${area}' and st_isvalid(parks.geom)"
 
 ogr2ogr -f "GeoJSON" $tmp_dir/buildings.geojson \
   -t_srs $OREGON_NORTH_SRS \
@@ -65,7 +67,7 @@ ogr2ogr -f "GeoJSON" $tmp_dir/buildings.geojson \
   -sql "select st_union(st_intersection(tsp.geom, buildings.geom)) as geom \
     from tsp_districts tsp  \
     inner join buildings on st_intersects(tsp.geom, buildings.geom) \
-    where districtna = '${area}' and st_isvalid(buildings.geom)"
+    where lower(districtna) = '${area}' and st_isvalid(buildings.geom)"
 
 topojson \
   -o $out_file \
