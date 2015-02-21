@@ -72,6 +72,7 @@ topojson \
   -s .25 \
   -p bmio=+blkgrp_median_income_owners \
   -p bmir=+blkgrp_median_income_renters \
+  --cartesian \
   --width 800 \
   --height 800 \
   -- $tmp_dir/rivers.geojson \
