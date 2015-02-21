@@ -3,6 +3,7 @@
 set -e
 
 OREGON_NORTH_SRS='EPSG:2913'
+SHP_SIMPLIFICATION=0.0001
 
 usage() {
   echo "Usage: $0 [-d database name] [-o out file or /dev/stdout] [-a TSP area N, NE, NW, CENTRAL, FAR_SE, etc.]" 1>&2; exit 1;
@@ -25,7 +26,8 @@ tmp_dir=`mktemp -t housing -d`
 
 ogr2ogr -f "GeoJSON" $tmp_dir/rivers.geojson \
   -t_srs $OREGON_NORTH_SRS \
-  -simplify 0.0001 \
+  -s_srs 'EPSG:4326' \
+  -simplify $SHP_SIMPLIFICATION \
   PG:"dbname=${db_name}" \
   -sql "select st_union(st_intersection(tsp.geom, rivers.geom)) as geom \
     from tsp_districts tsp  \
@@ -34,7 +36,8 @@ ogr2ogr -f "GeoJSON" $tmp_dir/rivers.geojson \
 
 ogr2ogr -f "GeoJSON" $tmp_dir/blockgroups.geojson \
   -t_srs $OREGON_NORTH_SRS \
-  -simplify 0.0001 \
+  -s_srs 'EPSG:4326' \
+  -simplify $SHP_SIMPLIFICATION \
   PG:"dbname=${db_name}" \
   -sql "select st_intersection(tsp.geom, acs.wkb_geometry) as geom, acs.*, lai.* \
     from tsp_districts tsp \
@@ -44,7 +47,8 @@ ogr2ogr -f "GeoJSON" $tmp_dir/blockgroups.geojson \
 
 ogr2ogr -f "GeoJSON" $tmp_dir/streets.geojson \
   -t_srs $OREGON_NORTH_SRS \
-  -simplify 0.0001 \
+  -s_srs 'EPSG:4326' \
+  -simplify $SHP_SIMPLIFICATION \
   PG:"dbname=${db_name}" \
   -sql "select st_union(st_intersection(tsp.geom, streets.geom)) as geom \
     from tsp_districts tsp  \
@@ -53,7 +57,8 @@ ogr2ogr -f "GeoJSON" $tmp_dir/streets.geojson \
 
 ogr2ogr -f "GeoJSON" $tmp_dir/parks.geojson \
   -t_srs $OREGON_NORTH_SRS \
-  -simplify 0.0001 \
+  -s_srs 'EPSG:4326' \
+  -simplify $SHP_SIMPLIFICATION \
   PG:"dbname=${db_name}" \
   -sql "select st_union(st_intersection(tsp.geom, parks.geom)) as geom \
     from tsp_districts tsp  \
@@ -62,7 +67,8 @@ ogr2ogr -f "GeoJSON" $tmp_dir/parks.geojson \
 
 ogr2ogr -f "GeoJSON" $tmp_dir/buildings.geojson \
   -t_srs $OREGON_NORTH_SRS \
-  -simplify 0.0001 \
+  -s_srs 'EPSG:4326' \
+  -simplify $SHP_SIMPLIFICATION \
   PG:"dbname=${db_name}" \
   -sql "select st_union(st_intersection(tsp.geom, buildings.geom)) as geom \
     from tsp_districts tsp  \
