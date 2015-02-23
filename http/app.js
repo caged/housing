@@ -1,4 +1,4 @@
-var TSPD = 'n'
+var TSPD = 'sw'
 
 var map = d3.select('.js-map'),
     width = 800,
@@ -39,7 +39,6 @@ var color = d3.scale.linear()
     .attr('xlink:href', "data/hillshade-" + TSPD + ".png")
     .attr('width', width)
     .attr('height', height)
-    .attr('transform', 'rotate(0.2)')
 
   svg.selectAll('.blockgroups')
     .data(topojson.feature(pdx, pdx.objects.blockgroups).features)
@@ -70,8 +69,8 @@ var color = d3.scale.linear()
     .attr('class', 'buildings')
     .attr('d', path)
 
-  // svg.append('text')
-  //   .attr('class', 'label')
-  //   .attr('transform', 'translate(500, 585) rotate(-28.5)')
-  //   .text('Sandy Boulevard')
+  svg.append('text')
+    .attr('class', 'label')
+    .attr('transform', 'translate(500, 585) rotate(-28.5)')
+    .text('Sandy Boulevard')
 })
