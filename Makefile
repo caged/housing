@@ -79,7 +79,6 @@ png/hillshade-%.png:
 
 	gdal_translate \
 		-of PNG \
-		-outsize 800 800 \
 		$@.tif $@
 
 gdb/tiger/acs_2013_5yr.gdb: gz/tiger/acs_2013_5yr.zip
