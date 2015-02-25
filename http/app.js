@@ -1,8 +1,8 @@
-var TSPD = 'sw'
+var TSPD = 'far_se'
 
 var map = d3.select('.js-map'),
-    width = 800,
-    height = 800
+    width = 700,
+    height = 700
 
 var path = d3.geo.path()
   .projection(null)

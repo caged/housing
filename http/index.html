@@ -18,6 +18,7 @@
     line-height: 1;
     margin: 0;
     padding: 0;
+    background: #f0fbf3;
   }
 
   .land {
@@ -53,17 +54,18 @@
   }
 
   .buildings {
-    fill: #fff;
+    fill: #192934;
     fill-opacity: 0.3;
     stroke: none;
   }
 
   .label {
     font-family: "Helvetica Neue", Helvetica, sans-serif;
-    font-size: 12px;
-    font-weight: bold;
+    font-size: 10px;
     fill: #fff;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+    stroke: #000;
+    paint-order: stroke;
+    stroke-width: 3;
   }
 
   h1 {
@@ -75,7 +77,6 @@
 </style>
 </head>
 <body>
-<h1>Northeast Portland</h1>
 <div class="map js-map"></div>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
