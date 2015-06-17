@@ -1,4 +1,4 @@
-var TSPD = 'far_se'
+var TSPD = 'ne'
 
 var map = d3.select('.js-map'),
     width = 700,
@@ -34,7 +34,7 @@ var color = d3.scale.linear()
     .attr('xlink:href', '#land')
 
   svg.append('g')
-    .attr('clip-path', 'url(#clip)')
+    // .attr('clip-path', 'url(#clip)')
   .append('image')
     .attr('xlink:href', "data/hillshade-" + TSPD + ".png")
     .attr('width', width)

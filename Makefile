@@ -35,6 +35,12 @@ shp/pdx/parks.shp: gz/pdx/Parks_pdx.zip
 shp/pdx/buildings.shp: gz/pdx/Building_Footprints_pdx.zip
 shp/pdx/buildings.shp: gz/pdx/Building_Footprints_pdx.zip
 shp/pdx/rivers.shp: gz/metro/mjriv_fi.zip
+shp/pdx/tsp_buffered_boundaries.shp: shp/pdx/tsp_district_boundaries.shp
+	ogr2ogr \
+		-dialect sqlite \
+		-sql "select DISTRICTNA, ST_Envelope(Geometry) from tsp_district_boundaries" \
+		$@ $<
+
 
 png/hillshade.png: gz/usgs/pdx_ned.zip
 	rm -rf $(basename $@)
@@ -80,6 +86,8 @@ png/hillshade-%.png:
 	gdal_translate \
 		-of PNG \
 		$@.tif $@
+
+	rm $@.tif
 
 gdb/tiger/acs_2013_5yr.gdb: gz/tiger/acs_2013_5yr.zip
 	mkdir -p $(dir $@)
